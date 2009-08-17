@@ -1,8 +1,6 @@
-'''
-Created on 17 Aug 2009
+import pysvn
+import time
 
-@author: david
-'''
 class Repo(object):
     def __init__(self, url, user, password):
         self.url = url
@@ -15,5 +13,8 @@ class CommitRetriever(object):
     def __init__(self, svn_client):
         self._svn_client = svn_client
     def get_commits_for_date_range(self, repo, date_range):
-        commits = self._svn_client.log(repo.url, limit=20)
+        start_revision = pysvn.Revision(pysvn.opt_revision_kind.date, time.mktime(date_range[0].timetuple()))
+        end_revision = pysvn.Revision(pysvn.opt_revision_kind.date, time.mktime(date_range[1].timetuple()))
+        
+        commits = self._svn_client.log(repo.url, revision_start=start_revision, revision_end=end_revision)
         return commits

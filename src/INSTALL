@@ -1,0 +1,4 @@
+# INSTALLATION
+
+# Ubuntu
+sudo apt-get install python-svn

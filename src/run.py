@@ -9,7 +9,7 @@ repos = [Repo(url, user, password) for url in repo_urls]
 
 # Get date range for analysis
 end_date = datetime.datetime.now()
-start_date = end_date - datetime.timedelta(days=1)
+start_date = end_date - datetime.timedelta(days=30)
 date_range = (start_date, end_date)
 
 # Analyse commits
