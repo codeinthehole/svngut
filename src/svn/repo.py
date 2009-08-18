@@ -1,6 +1,8 @@
 import pysvn
 import time
 
+__all__ = ['Repo', 'CommitRetriever', 'CommitSummariser', 'Formatter']
+
 class Repo(object):
     def __init__(self, url, user, password):
         self.url = url
@@ -18,3 +20,16 @@ class CommitRetriever(object):
         
         commits = self._svn_client.log(repo.url, revision_start=start_revision, revision_end=end_revision)
         return commits
+    
+class CommitSummariser(object):
+    def get_commit_list_summary(self, commit_list): 
+        commit_summary = {}
+        for commit in commit_list:
+            if commit.author not in commit_summary:
+                commit_summary[commit.author] = {"name": commit.author, "commits": 1}
+            else:
+                commit_summary[commit.author]["commits"] += 1
+        return commit_summary
+
+class Formatter(object):
+    pass
