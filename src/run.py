@@ -39,9 +39,6 @@ for repo in repos:
     for user, info in summary.items():
         logging.info(" - %s\t%d commits" % (user.ljust(20), info["commits"]))
     
-# Format commit summary
-formatter = Formatter()
-
 # Send notifications
 logging.info("Sending emails...")
 server = smtplib.SMTP('localhost')
