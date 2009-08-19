@@ -5,9 +5,6 @@ import logging
 import sys
 import smtplib
 
-# Import configuration
-from config import svn_username, svn_password, repos, user_repos, analysis_period_in_days
-
 # Set up logger
 logging.basicConfig(
     stream = sys.stdout,  
@@ -15,6 +12,13 @@ logging.basicConfig(
     format = "%(asctime)s\t%(message)s"
 );
 logging.info("Starting SVN gut - let the digestin' begin...")
+
+# Import configuration
+try:
+    from config import svn_username, svn_password, repos, user_repos, analysis_period_in_days
+except ImportError:
+    logging.info("Cannot find config file (config.py)")
+    sys.exit()
 
 # Summarise configuration
 logging.info("Config: found %d repos to digest" % len(repos))
@@ -33,17 +37,20 @@ svn_interrogator = CommitRetriever(pysvn.Client())
 commit_analyser = CommitSummariser()
 for repo in repos:
     logging.info("Checking repo: %s" % repo.url)
-    commits = svn_interrogator.get_commits_for_date_range(repo, date_range)
-    logging.info("Found %d commits" % len(commits))
-    summary = commit_analyser.get_commit_list_summary(commits)
-    for user, info in summary.items():
-        logging.info(" - %s\t%d commits" % (user.ljust(20), info["commits"]))
+    try:
+        commits = svn_interrogator.get_commits_for_date_range(repo, date_range)
+        logging.info("Found %d commits" % len(commits))
+        summary = commit_analyser.get_commit_list_summary(commits)
+        for user, info in summary.items():
+            logging.info(" - %s\t%d commits" % (user.ljust(20), info["commits"]))
+    except pysvn._pysvn.ClientError:
+        logging.info("SVN client error - cannot access %s" % repo.url)
     
 # Send notifications
 logging.info("Sending emails...")
 server = smtplib.SMTP('localhost')
-for email_address, linked_repo_names in user_repos:
+for email_address, linked_repo_names in user_repos.items():
     logging.info(" - Sending summary to %s" % email_address)
-    email_body = ", ".join(linked_repo_names)
+    email_body = "SVNGUT summary"
     server.sendmail('svngut@orwell.tangentlabs.co.uk', email_address, email_body)
 server.quit()
