@@ -21,8 +21,8 @@ except ImportError:
     sys.exit()
 
 # Summarise configuration
-logging.info("Config: found %d repos to digest" % len(repos))
-logging.info("Config: found %d recipients to inform" % len(user_repos.keys()))
+logging.info("Config: found %d repo(s) to digest" % len(repos))
+logging.info("Config: found %d recipient(s) to inform" % len(user_repos.keys()))
 
 # Get date range for analysis
 end_date = datetime.datetime.now()
@@ -35,6 +35,7 @@ logging.info("Date range: %s to %s (last %d days)" % \
 repos = [Repo(url, svn_username, svn_password) for url in repos.values()]
 svn_interrogator = CommitRetriever(pysvn.Client())
 commit_analyser = CommitSummariser()
+repo_summaries = {}
 for repo in repos:
     logging.info("Checking repo: %s" % repo.url)
     try:
@@ -43,14 +44,18 @@ for repo in repos:
         summary = commit_analyser.get_commit_list_summary(commits)
         for user, info in summary.items():
             logging.info(" - %s\t%d commits" % (user.ljust(20), info["commits"]))
+        repo_summaries[repo] = summary
     except pysvn._pysvn.ClientError:
         logging.info("SVN client error - cannot access %s" % repo.url)
     
 # Send notifications
 logging.info("Sending emails...")
 server = smtplib.SMTP('localhost')
+formatter = CommitSummaryFormatter(repo_summaries);
 for email_address, linked_repo_names in user_repos.items():
-    logging.info(" - Sending summary to %s" % email_address)
-    email_body = "SVNGUT summary"
+    logging.info(" - Sending summary of %d repos to %s" % (len(linked_repo_names), email_address))
+    email_body = formatter.get_formatted_summaries(linked_repo_names)
+    logging.info("\n%s" % email_body)
     server.sendmail('svngut@orwell.tangentlabs.co.uk', email_address, email_body)
 server.quit()
+logging.info("Finished SVN Gut")

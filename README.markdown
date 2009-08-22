@@ -1,8 +1,12 @@
 SVNGUT
 ======
 
-This is a simple python utility for "digesting" SVN repositories and sending a periodic
-summary email to a configurable list of recipients.
+This is a simple python utility for digesting SVN repositories and sending a periodic
+summary email to a configurable list of recipients.  
 
-This is largely motivated by my day job which involves overseeing a team of developers working
-across many different SVN repositories.
+Configuration
+=============
+Copy the config-sample.py file to config.py and update the hash configuration details to 
+indicate which repos to analyse and which email addresses to notify.  Should be fairly self
+explanatory based on the sample content.
+

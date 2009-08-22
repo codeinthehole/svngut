@@ -1,7 +1,7 @@
 import pysvn
 import time
 
-__all__ = ['Repo', 'CommitRetriever', 'CommitSummariser', 'Formatter']
+__all__ = ['Repo', 'CommitRetriever', 'CommitSummariser', 'CommitSummaryFormatter']
 
 class Repo(object):
     def __init__(self, url, user, password):
@@ -31,5 +31,15 @@ class CommitSummariser(object):
                 commit_summary[commit.author]["commits"] += 1
         return commit_summary
 
-class Formatter(object):
-    pass
+class CommitSummaryFormatter(object):
+    def __init__(self, repo_summaries):
+        self.summaries = repo_summaries
+    
+    def get_formatted_summaries(self, repo_list):
+        formatted_summaries = []
+        for repo in repo_list:
+            formatted_summaries.append(self.get_formatted_repo(repo))
+        return "\n".join(formatted_summaries) 
+    
+    def get_formatted_repo(self, repo):
+        return repo
