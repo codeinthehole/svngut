@@ -36,10 +36,11 @@ class CommitSummaryFormatter(object):
         self.summaries = repo_summaries
     
     def get_formatted_summaries(self, repo_list):
-        formatted_summaries = []
-        for repo in repo_list:
-            formatted_summaries.append(self.get_formatted_repo(repo))
+        formatted_summaries = [self.get_formatted_repo(repo) for repo in repo_list]
         return "\n".join(formatted_summaries) 
     
-    def get_formatted_repo(self, repo):
-        return repo
+    def get_formatted_repo(self, repository):
+        summary = repository.url+"\n"
+        for user, info in self.summaries[repository.url].items():
+            summary += " - %s: %d commits\n" % (user, info['commits'])
+        return summary+"\n"
