@@ -4,6 +4,7 @@ import pysvn
 import logging
 import sys
 import smtplib
+from email.mime.text import MIMEText
 
 # Set up logger
 logging.basicConfig(
@@ -15,7 +16,8 @@ logging.info("Starting SVN gut - let the digestin' begin...")
 
 # Import configuration
 try:
-    from config import svn_username, svn_password, repository_mapping, user_repository_mapping, analysis_period_in_days
+    from config import svn_username, svn_password, repository_mapping, \
+        user_repository_mapping, analysis_period_in_days, email_server, email_sender
 except ImportError:
     logging.info("Cannot find config file (config.py)")
     sys.exit()
@@ -60,12 +62,16 @@ print repository_summaries
     
 # Send notifications
 logging.info("Sending emails...")
-server = smtplib.SMTP('localhost')
+server = smtplib.SMTP(email_server)
 formatter = CommitSummaryFormatter(repository_summaries);
 for email_address, repository_list in user_repositories.items():
     logging.info(" - Sending summary of %d repos to %s" % (len(repository_list), email_address))
     email_body = formatter.get_formatted_summaries(repository_list)
+    message = MIMEText(email_body)
+    message['Subject'] = 'SVNGUT summary for %s to %s' % (start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d"))
+    message['From'] = email_sender
+    message['To'] = email_address
     logging.info("\n%s" % email_body)
-    server.sendmail('svngut@orwell.tangentlabs.co.uk', email_address, email_body)
+    server.sendmail(email_sender, [email_address], message.as_string())
 server.quit()
 logging.info("Finished SVN Gut")

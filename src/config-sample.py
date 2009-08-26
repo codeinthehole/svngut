@@ -16,3 +16,7 @@ svn_password = None
 
 # Misc - the number of days of SVN activity to analyse
 analysis_period_in_days = 7
+
+# Email settings
+email_server = 'localhost'
+email_sender = 'svngut@example.com'
