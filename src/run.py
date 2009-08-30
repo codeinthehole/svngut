@@ -1,4 +1,4 @@
-from svn.repo import *
+from svngut import *
 import datetime
 import pysvn
 import logging
@@ -54,7 +54,7 @@ for name, repository in repositories.items():
         summary = commit_analyser.get_commit_list_summary(commits)
         for user, info in summary.items():
             logging.info(" - %s\t%d commits" % (user.ljust(20), info["commits"]))
-        repository_summaries[repository.url] = summary
+        repository_summaries[repository.url] = {'summary': summary, 'commits': commits}
     except pysvn._pysvn.ClientError:
         logging.info("SVN client error - cannot access %s" % repository.url)
     
