@@ -12,7 +12,7 @@ Classes:
 import pysvn
 import time
 
-__all__ = ['SvnRepo', 'SvnRepoContributor', 'SvnCommitRetriever', 'CommitSummaryFormatter']
+__all__ = ['SvnRepo', 'SvnRepoContributor', 'SvnCommitRetriever']
 
 class SvngutError(Exception):
     pass
@@ -20,11 +20,11 @@ class SvngutError(Exception):
 class SvnRepo(object):
 
     def __init__(self, url, user, password):
-        """This takes the SVN location and credentials
-		"""
+        """This takes the SVN location and credentials"""
         self.url = url
         self.user = user
         self.password = password
+    
     def __repr__(self):
         return "<SVN repository at %s>" % self.url
     
@@ -106,27 +106,3 @@ class SvnCommitRetriever(object):
         for path_change in raw_commit.changed_paths:
             lines.append("%s: %s" % (path_change['action'], path_change['path']))
         return lines
-        
-class CommitSummariser(object):
-    def get_commit_list_summary(self, commit_list): 
-        commit_summary = {}
-        for commit in commit_list:
-            if commit.author not in commit_summary:
-                commit_summary[commit.author] = {"name": commit.author, "commits": 1}
-            else:
-                commit_summary[commit.author]["commits"] += 1
-        return commit_summary
-
-class CommitSummaryFormatter(object):
-    def __init__(self, repo_summaries):
-        self.summaries = repo_summaries
-    
-    def get_formatted_summaries(self, repo_list):
-        formatted_summaries = [self.get_formatted_repo(repo) for repo in repo_list]
-        return "\n".join(formatted_summaries) 
-    
-    def get_formatted_repo(self, repository):
-        summary = repository.url+"\n"
-        for user, info in self.summaries[repository.url].items():
-            summary += " - %s: %d commits\n" % (user, info['commits'])
-        return summary+"\n"
