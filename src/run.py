@@ -23,6 +23,7 @@ except ImportError:
     sys.exit()
 
 # Summarise configuration
+logging.info("Parsing config file...")
 logging.info("Config: found %d repo(s) to digest" % len(repository_mapping))
 logging.info("Config: found %d recipient(s) to inform" % len(user_repository_mapping.keys()))
 
@@ -50,20 +51,26 @@ for name, repo in repositories.items():
     repository_contributions[repo.url] = contributors
 
 # Send notifications
-logging.info("Sending emails...")
+logging.info("Sending notification emails...")
 server = smtplib.SMTP(email_server)
 for email_address, repository_list in user_repositories.items():
     logging.info(" - Sending summary of %d repo(s) to %s" % (len(repository_list), email_address))
-    email_body = ""
+    # Construct email body
+    email_body = "<html>"
     for repo in repository_list:
         contributions = repository_contributions[repo.url]
-        email_body += repo.url+"\n"
-        email_body += "\n".join([contribution.get_email_summary() for contribution in contributions])
+        email_body += "Repository: <strong>%s</strong><br/>" % repo.url
+        email_body += "<ol><li>"
+        email_body += "</li><li>".join([contribution.get_email_summary() for contribution in contributions])
+        email_body += "</li></ol>"
+    email_body += "</html>"
+    print email_body
+    sys.exit()
+
     message = MIMEText(email_body)
     message['Subject'] = 'SVNGUT summary for %s to %s' % (start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d"))
     message['From'] = email_sender
     message['To'] = email_address
-    logging.info("\n%s" % email_body)
     server.sendmail(email_sender, [email_address], message.as_string())
 server.quit()
 logging.info("Finished SVN Gut")   

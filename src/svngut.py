@@ -38,7 +38,7 @@ class SvnCommit(object):
         return "<svn-commit: '%s'>" % self._get_message()
 
     def get_summary(self):
-        return "  "+'"%s"\n  %s' % (self._get_message(), "  "+"\n    ".join(self.file_changes))
+        return self._get_message()
     
     def _get_message(self):
         if self.message == "":
