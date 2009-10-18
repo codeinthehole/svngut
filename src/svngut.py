@@ -11,6 +11,7 @@ Classes:
 
 import pysvn
 import time
+import datetime
 
 __all__ = ['SvnRepo', 'SvnRepoContributor', 'SvnCommitRetriever']
 
@@ -30,20 +31,29 @@ class SvnRepo(object):
     
 class SvnCommit(object):
     
-    def __init__(self, message, file_changes):
+    def __init__(self, revision, message, date, file_changes):
+        self.revision = revision
         self.message = message.strip()
+        self.date = date
         self.file_changes = file_changes
         
     def __repr__(self):
-        return "<svn-commit: '%s'>" % self._get_message()
+        return "<svn-commit: %d '%s' (%s)>" % (self.revision, self._get_message(), self.date.strftime("%Y-%m-%d %H:%M"))
 
     def get_summary(self):
-        return self._get_message()
+        return "[%s] %s (%s)" % (self.date.strftime("%Y-%m-%d %H:%M"), self._get_message(), self._get_file_summary())
     
     def _get_message(self):
         if self.message == "":
             return "<no message>" 
         return self.message
+
+    def _get_file_summary(self):
+        if (len(self.file_changes) == 1):
+            return self.file_changes[0]
+        else:
+            return "%d files" % len(self.file_changes)
+
 
 class SvnRepoContributor(object):
     
@@ -56,7 +66,7 @@ class SvnRepoContributor(object):
         
     def _get_commits_summary(self):
         summaries = [commit.get_summary() for commit in self.commits] 
-        return "\n".join(summaries)
+        return "<br/>".join(summaries)
         
     def __repr__(self):
         return "<svn-contributor: %s - %d commit(s)>" % (self.name, len(self.commits))
@@ -75,11 +85,19 @@ class SvnCommitRetriever(object):
     def _get_raw_commits(self, repo, date_range):
         start_revision = pysvn.Revision(pysvn.opt_revision_kind.date, time.mktime(date_range[0].timetuple()))
         end_revision = pysvn.Revision(pysvn.opt_revision_kind.date, time.mktime(date_range[1].timetuple()))
-        return self._svn_client.log(repo.url, 
+        raw_commits = self._svn_client.log(repo.url, 
                                     revision_start=start_revision, 
                                     revision_end=end_revision,
                                     discover_changed_paths=True)
-    
+        # Need to double-check dates as the revision look-up method isn't 100% watertight
+        start_timestamp = date_range[0].time()
+        filtered_commits = []
+        for commit in raw_commits:
+            commit_datetime = datetime.datetime.fromtimestamp(commit.date)
+            if commit_datetime > date_range[0] and commit_datetime < date_range[1]:
+                filtered_commits.append(commit)
+        return filtered_commits
+
     def _get_raw_user_commit_lists(self, all_commits):
         user_commits = {}
         for commit in all_commits:
@@ -99,7 +117,10 @@ class SvnCommitRetriever(object):
         return [self._get_processed_commit(raw_commit) for raw_commit in raw_commits]
     
     def _get_processed_commit(self, raw_commit):
-        return SvnCommit(raw_commit.message, self._get_commit_file_changes(raw_commit))
+        return SvnCommit(raw_commit.revision.number, 
+                raw_commit.message, 
+                datetime.datetime.fromtimestamp(raw_commit.date), 
+                self._get_commit_file_changes(raw_commit))
     
     def _get_commit_file_changes(self, raw_commit):
         lines = []

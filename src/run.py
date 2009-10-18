@@ -37,8 +37,9 @@ for user, repository_list in user_repository_mapping.items():
     user_repositories[user] = [repositories[name] for name in repository_list]
 
 # Get date range for analysis
-end_date = datetime.datetime.now()
-start_date = end_date - datetime.timedelta(days=analysis_period_in_days)
+today = datetime.date.today()
+start_date = datetime.datetime(today.year, today.month, today.day-analysis_period_in_days, 0, 0, 0)
+end_date = datetime.datetime(today.year, today.month, today.day-1, 23, 59, 59)
 date_range = (start_date, end_date)
 logging.info("Date range: %s to %s (last %d days)" % \
              (start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d"), analysis_period_in_days))
@@ -59,13 +60,13 @@ for email_address, repository_list in user_repositories.items():
     email_body = "<html>"
     for repo in repository_list:
         contributions = repository_contributions[repo.url]
-        email_body += "Repository: <strong>%s</strong><br/>" % repo.url
-        email_body += "<ol><li>"
-        email_body += "</li><li>".join([contribution.get_email_summary() for contribution in contributions])
-        email_body += "</li></ol>"
+        if (len(contributions) > 0): 
+            email_body += "Repository: <strong>%s</strong>" % repo.url
+            email_body += "<ol><li>"
+            email_body += "</li><li>".join([contribution.get_email_summary() for contribution in contributions])
+            email_body += "</li></ol>"
     email_body += "</html>"
-    print email_body
-    sys.exit()
+    logging.info(email_body)
 
     message = MIMEText(email_body)
     message['Subject'] = 'SVNGUT summary for %s to %s' % (start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d"))
