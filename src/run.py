@@ -68,7 +68,7 @@ for email_address, repository_list in user_repositories.items():
     email_body += "</html>"
     logging.info(email_body)
 
-    message = MIMEText(email_body)
+    message = MIMEText(email_body, 'html')
     message['Subject'] = 'SVNGUT summary for %s to %s' % (start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d"))
     message['From'] = email_sender
     message['To'] = email_address
