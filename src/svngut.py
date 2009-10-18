@@ -62,7 +62,7 @@ class SvnRepoContributor(object):
         self.commits = commits
     
     def get_email_summary(self):
-        return "%s: %d commit(s)\n%s" % (self.name, len(self.commits), self._get_commits_summary())
+        return "%s: %d commit(s)<br/>%s" % (self.name, len(self.commits), self._get_commits_summary())
         
     def _get_commits_summary(self):
         summaries = [commit.get_summary() for commit in self.commits] 
