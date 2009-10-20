@@ -45,7 +45,7 @@ class SvnCommit(object):
     
     def _get_message(self):
         if self.message == "":
-            return "<no message>" 
+            return "[no message]" 
         return self.message
 
     def _get_file_summary(self):
@@ -62,7 +62,7 @@ class SvnRepoContributor(object):
         self.commits = commits
     
     def get_email_summary(self):
-        return "%s: %d commit(s)<br/>%s" % (self.name, len(self.commits), self._get_commits_summary())
+        return "<strong>%s</strong>: %d commit(s)<br/>%s" % (self.name, len(self.commits), self._get_commits_summary())
         
     def _get_commits_summary(self):
         summaries = [commit.get_summary() for commit in self.commits] 
