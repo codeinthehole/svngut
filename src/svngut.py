@@ -15,8 +15,10 @@ import datetime
 
 __all__ = ['SvnRepo', 'SvnRepoContributor', 'SvnCommitRetriever']
 
+
 class SvngutError(Exception):
     pass
+
 
 class SvnRepo(object):
 
@@ -29,7 +31,9 @@ class SvnRepo(object):
     def __repr__(self):
         return "<SVN repository at %s>" % self.url
     
+
 class SvnCommit(object):
+    """A commit object"""
     
     def __init__(self, revision, message, date, file_changes):
         self.revision = revision
@@ -37,12 +41,21 @@ class SvnCommit(object):
         self.date = date
         self.file_changes = file_changes
         
-    def __repr__(self):
-        return "<svn-commit: %d '%s' (%s)>" % (self.revision, self._get_message(), self.date.strftime("%Y-%m-%d %H:%M"))
-
     def get_summary(self):
         return "[%s] %s (%s)" % (self.date.strftime("%Y-%m-%d %H:%M"), self._get_message(), self._get_file_summary())
     
+    def get_num_affected_files(self):
+        return len(self.file_changes)
+
+    def get_num_new_files(self):
+        return len(filter(lambda x: x.find('A: ') == 0, self.file_changes))
+
+    def get_num_modified_files(self):
+        return len(filter(lambda x: x.find('M: ') == 0, self.file_changes))
+
+    def get_num_deleted_files(self):
+        return len(filter(lambda x: x.find('D: ') == 0, self.file_changes))
+
     def _get_message(self):
         if self.message == "":
             return "[no message]" 
@@ -54,6 +67,9 @@ class SvnCommit(object):
         else:
             return "%d files" % len(self.file_changes)
 
+    def __repr__(self):
+        return "<svn-commit: %d '%s' (%s)>" % (self.revision, self._get_message(), self.date.strftime("%Y-%m-%d %H:%M"))
+
 
 class SvnRepoContributor(object):
     
@@ -61,6 +77,21 @@ class SvnRepoContributor(object):
         self.name = name
         self.commits = commits
     
+    def get_num_commits(self):
+        return len(self.commits)
+
+    def get_num_affected_files(self):
+        return sum(map(lambda c: c.get_num_affected_files(), self.commits))
+
+    def get_num_new_files(self):
+        return sum(map(lambda c: c.get_num_new_files(), self.commits))
+
+    def get_num_modified_files(self):
+        return sum(map(lambda c: c.get_num_modified_files(), self.commits))
+
+    def get_num_deleted_files(self):
+        return sum(map(lambda c: c.get_num_deleted_files(), self.commits))
+
     def get_email_summary(self):
         return "<strong>%s</strong>: %d commit(s)<br/>%s" % (self.name, len(self.commits), self._get_commits_summary())
         
@@ -71,12 +102,13 @@ class SvnRepoContributor(object):
     def __repr__(self):
         return "<svn-contributor: %s - %d commit(s)>" % (self.name, len(self.commits))
 
+
 class SvnCommitRetriever(object):
     
     def __init__(self, svn_client):
         self._svn_client = svn_client
     
-    def get_contributors(self, repo, date_range):
+    def get_contributions(self, repo, date_range):
         raw_commits = self._get_raw_commits(repo, date_range)
         raw_commits_by_user = self._get_raw_user_commit_lists(raw_commits)
         processed_commits_by_user = self._get_processed_user_commit_lists(raw_commits_by_user)

@@ -46,8 +46,27 @@ logging.info("Date range: %s to %s (last %d days)" % \
 interrogator = SvnCommitRetriever(pysvn.Client())
 repository_contributions = {}
 for name, repo in repositories.items():
-    contributors = interrogator.get_contributors(repo, date_range)
-    repository_contributions[repo.url] = contributors
+    contributions = interrogator.get_contributions(repo, date_range)
+    repository_contributions[repo.url] = contributions
+
+# Summary stats for all repos
+contributor_stats = {}
+for repo, contributions in repository_contributions.items():
+    for contribution in contributions:
+        name = contribution.name
+        if contributor_stats.has_key(name):
+            contributor_stats[name]['commits'] += contribution.get_num_commits()
+            contributor_stats[name]['affected_files'] += contribution.get_num_affected_files()
+            contributor_stats[name]['new_files'] += contribution.get_num_new_files()
+            contributor_stats[name]['modified_files'] += contribution.get_num_modified_files()
+        else:
+            contributor_stats[name] = {
+                'name': name,
+                'commits': contribution.get_num_commits(),
+                'affected_files': contribution.get_num_affected_files(),
+                'new_files': contribution.get_num_new_files(),
+                'modified_files': contribution.get_num_modified_files(),
+            }
 
 # Send notifications
 logging.info("Sending notification emails...")
@@ -56,6 +75,14 @@ for email_address, repository_list in user_repositories.items():
     logging.info(" - Sending summary of %d repo(s) to %s" % (len(repository_list), email_address))
     # Construct email body (need to refactor to use templating language)
     email_body = "<html>"
+    email_body += "<h1>Overall statistics</h1>"
+    email_body += "<table><tr><th>Name</th><th>Commits</th><th>Num files</th></tr>"
+    for contributor in contributor_stats.values():
+        email_body += "<tr><td>%s</td><td>%s</td><td>%s</td></tr>" % \
+                (contributor['name'], contributor['commits'], contributor['affected_files'])
+    email_body += "</table>"
+
+    email_body += "<h1>Breakdown</h1>"
     for repo in repository_list:
         contributions = repository_contributions[repo.url]
         if (len(contributions) > 0): 
