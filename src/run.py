@@ -3,6 +3,7 @@ import datetime
 import pysvn
 import logging
 import sys
+from mako.template import Template
 import smtplib
 from email.mime.text import MIMEText
 
@@ -73,7 +74,13 @@ logging.info("Sending notification emails...")
 server = smtplib.SMTP(email_server)
 for email_address, repository_list in user_repositories.items():
     logging.info(" - Sending summary of %d repo(s) to %s" % (len(repository_list), email_address))
+
     # Construct email body (need to refactor to use templating language)
+    #email_template = Template(filename='templates/summary.html')
+    #email_body = email_template.render(contributor_stats=contributor_stats)
+    #print email_body
+    #sys.exit()
+
     email_body = "<html>"
     email_body += "<h1>Overall statistics</h1>"
     email_body += "<table><tr><th>Name</th><th>Commits</th><th>Num files</th></tr>"

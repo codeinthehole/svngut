@@ -2,3 +2,4 @@
 
 # Ubuntu
 sudo apt-get install python-svn
+sudo easy_install Mako

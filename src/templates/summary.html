@@ -1,0 +1,21 @@
+<html>
+	<body>
+		<h1>SVNGUT Digest</h1>
+		
+		<h2>Summary stats</h2>
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>Commits</th>
+				<th>Num files</th>
+			</tr>
+			% for contributor in contributor_stats.values():
+			<tr>
+				<th>${contributor['name']}</th>
+				<th>${contributor['commits']}</th>
+				<th>${contributor['affected_files']}</th>
+			</tr>
+			% endfor
+		</table>
+
+		<h2>Breakdown</h2>
