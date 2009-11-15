@@ -12,6 +12,7 @@ Classes:
 import pysvn
 import time
 import datetime
+import unittest
 
 __all__ = ['SvnRepo', 'SvnRepoContributor', 'SvnCommitRetriever']
 
@@ -117,6 +118,8 @@ class SvnCommitRetriever(object):
     def _get_raw_commits(self, repo, date_range):
         start_revision = pysvn.Revision(pysvn.opt_revision_kind.date, time.mktime(date_range[0].timetuple()))
         end_revision = pysvn.Revision(pysvn.opt_revision_kind.date, time.mktime(date_range[1].timetuple()))
+        # The changed paths option ensures that a list of path alterations is returned within
+        # the commit log message objects.
         raw_commits = self._svn_client.log(repo.url, 
                                     revision_start=start_revision, 
                                     revision_end=end_revision,
@@ -159,3 +162,9 @@ class SvnCommitRetriever(object):
         for path_change in raw_commit.changed_paths:
             lines.append("%s: %s" % (path_change['action'], path_change['path']))
         return lines
+
+class TestCommitRetriever(unittest.TestCase):
+
+    def testCommitFetchgin(self):
+        retriever = SvnCommitRetriever(pysvn.client())
+        commits = retriever.log('http://dev.tangentlabs.co.uk/svn/riba')

@@ -91,7 +91,10 @@ for email_address, repository_list in user_repositories.items():
             email_body += "</li><li>".join([contribution.get_email_summary() for contribution in contributions])
             email_body += "</li></ol>"
     email_body += "</html>"
-    logging.info(email_body)
+
+    f = open('/tmp/svngut-email.html', 'w')
+    f.write(email_body)
+    f.close()
 
     message = MIMEText(email_body, 'html')
     message['Subject'] = 'SVNGUT summary for %s' % (start_date.strftime("%Y-%m-%d"))
