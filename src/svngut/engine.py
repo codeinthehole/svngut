@@ -1,4 +1,5 @@
-from svngut import *
+from lookup import *
+from runtime import *
 import datetime
 import pysvn
 import logging
@@ -6,6 +7,7 @@ import sys
 from mako.template import Template
 import smtplib
 from email.mime.text import MIMEText
+from pprint import pprint as d
 
 # Set up logger
 logging.basicConfig(
@@ -13,7 +15,7 @@ logging.basicConfig(
     level = logging.INFO,
     format = "%(asctime)s\t%(message)s"
 );
-logging.info("Starting SVN gut - let the digestin' begin...")
+logging.info("SVNGUT - by David Winterbottom")
 
 # Import configuration
 try:
@@ -34,6 +36,8 @@ for name, url in repository_mapping.items():
 user_repositories = {}
 for user, repository_list in user_repository_mapping.items():
     user_repositories[user] = [repositories[name] for name in repository_list]
+
+d(repositories)
 
 # Get date range for analysis
 today = datetime.date.today()

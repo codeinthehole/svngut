@@ -1,3 +1,9 @@
+from runtime import *
+import datetime
+import time
+import pysvn
+import pprint
+
 class SvnCommitRetriever(object):
     
     def __init__(self, svn_client):
@@ -12,12 +18,15 @@ class SvnCommitRetriever(object):
     def _get_raw_commits(self, repo, date_range):
         start_revision = pysvn.Revision(pysvn.opt_revision_kind.date, time.mktime(date_range[0].timetuple()))
         end_revision = pysvn.Revision(pysvn.opt_revision_kind.date, time.mktime(date_range[1].timetuple()))
+        
         raw_commits = self._svn_client.log(repo.url, 
                                     revision_start=start_revision, 
                                     revision_end=end_revision,
                                     discover_changed_paths=True)
+        
+        print repo.url
+        
         # Need to double-check dates as the revision look-up method isn't 100% watertight
-        start_timestamp = date_range[0].time()
         filtered_commits = []
         for commit in raw_commits:
             commit_datetime = datetime.datetime.fromtimestamp(commit.date)

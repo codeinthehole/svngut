@@ -2,16 +2,18 @@ import pysvn
 import time
 import datetime
 
-__all__ = ['SvnRepo', 'SvnRepoContributor', 'SvnCommitRetriever']
+__all__ = ['SvnRepo', 'SvnCommit', 'SvnRepoContributor']
+
 
 class SvngutError(Exception):
     pass
 
+
 class SvnRepo(object):
 
-    def __init__(self, url, user, password):
+    def __init__(self, url, username, password):
         self.url = url
-        self.user = user
+        self.username = username
         self.password = password
     
     def __repr__(self):

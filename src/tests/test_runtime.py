@@ -1,4 +1,4 @@
-import svngut
+from svngut.runtime import *
 import unittest
 import datetime
 
@@ -13,7 +13,7 @@ class TestSvnCommit(unittest.TestCase):
             'M: /trunk/app/src/tao/classes/basket/delivery/CalculatorFactory.php', 
             'A: /trunk/app/src/tao/classes/basket/delivery/calculator', 
             'A: /trunk/app/src/tao/classes/basket/delivery/Methods.php']
-        self.commit = svngut.SvnCommit(self.revision, self.message, self.date, self.file_changes)
+        self.commit = SvnCommit(self.revision, self.message, self.date, self.file_changes)
 
     def testGetNumAffectedFiles(self):
         self.assertEqual(len(self.file_changes), self.commit.get_num_affected_files())
@@ -29,4 +29,3 @@ class TestSvnCommit(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
