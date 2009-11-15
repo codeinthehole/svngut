@@ -4,12 +4,10 @@ import datetime
 
 __all__ = ['SvnRepo', 'SvnCommit', 'SvnRepoContributor']
 
-
-class SvngutError(Exception):
+class Error(Exception):
     pass
 
-
-class SvnRepo(object):
+class Repository(object):
 
     def __init__(self, url, username, password):
         self.url = url
@@ -18,9 +16,8 @@ class SvnRepo(object):
     
     def __repr__(self):
         return "<SVN repository at %s>" % self.url
-    
 
-class SvnCommit(object):
+class Commit(object):
     """A commit object"""
     
     def __init__(self, revision, message, date, file_changes):
@@ -58,11 +55,10 @@ class SvnCommit(object):
     def __repr__(self):
         return "<svn-commit: %d '%s' (%s)>" % (self.revision, self._get_message(), self.date.strftime("%Y-%m-%d %H:%M"))
 
-
-class SvnRepoContributor(object):
+class BranchContribution(object):
     
-    def __init__(self, name, commits):
-        self.name = name
+    def __init__(self, branch_url, commits):
+        self.branch_url = branch_url
         self.commits = commits
     
     def get_num_commits(self):
@@ -90,3 +86,8 @@ class SvnRepoContributor(object):
     def __repr__(self):
         return "<svn-contributor: %s - %d commit(s)>" % (self.name, len(self.commits))
 
+class UserBranchContribution(object):
+    
+    def __init__(self, name, contribution):
+        self.name = name
+        self.contribution = contribution

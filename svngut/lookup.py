@@ -1,4 +1,4 @@
-from runtime import *
+from svngut.svn import *
 import datetime
 import time
 import pysvn

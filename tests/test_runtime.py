@@ -2,6 +2,15 @@ from svngut.runtime import *
 import unittest
 import datetime
 
+class TestSvnRepo(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def testPropertiesAreAccessible(self):
+        repo = SvnRepo('http://svn.example.com', 'user', 'passwd')
+        self.assertEqual('http://svn.example.com', repo.url)
+
 class TestSvnCommit(unittest.TestCase):
 
     def setUp(self):
