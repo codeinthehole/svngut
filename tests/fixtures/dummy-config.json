@@ -1,0 +1,22 @@
+{
+    "repositories": {
+        "mylibrary": {
+            "url": "http://svn.domain.com/mylibrary/",
+            "username": "user",
+            "password": "password123"
+        },
+        "otherlibrary": {
+            "url": "http://svn.domain.com/otherlibrary/",
+            "username": "otheruser",
+            "password": "password456"
+        }
+    },
+    "user_repositories": {
+        "user@domain.com": ["mylibrary", "otherlibrary"]
+    },
+    "mailer": {
+        "server": "localhost",
+        "sender": "svngut@domain.com"
+    },
+    "analysis_period_in_days": 4
+}

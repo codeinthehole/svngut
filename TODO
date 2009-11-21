@@ -1,3 +1,6 @@
 TODO
 
 Swap out config py file for a cfg file
+
+Commandline-options:
+- pass path to config file

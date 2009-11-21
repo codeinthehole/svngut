@@ -1,21 +1,35 @@
-import pysvn
-import time
-import datetime
+"""
+SVN objects
+"""
 
-__all__ = ['SvnRepo', 'SvnCommit', 'SvnRepoContributor']
+__all__ = ['Repository', 'Commit', 'BranchContribution', 'UserBranchContribution']
 
 class Error(Exception):
     pass
 
 class Repository(object):
+    """A simple representation of a repository, together with its authentication
+    credentials"""
 
-    def __init__(self, url, username, password):
+    def __init__(self, url):
         self.url = url
+        
+    def set_credentials(self, username, password):    
         self.username = username
         self.password = password
-    
+        
     def __repr__(self):
         return "<SVN repository at %s>" % self.url
+
+class UserRepositoryList(object):
+    """Represents a user's list of repositories that he/she is interested in"""
+    
+    def __init__(self, email_address):
+        self.email_address = email_address
+        self.repositories = []
+        
+    def add_repository(self, repository):
+        self.repositories.append(repository)
 
 class Commit(object):
     """A commit object"""

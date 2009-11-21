@@ -1,0 +1,27 @@
+config = {
+    "repositories": {
+        'taoshop': {
+            "url": 'http://dev.tangentlabs.co.uk/svn/taoshop/',
+            "username": "taobase-deployment",
+            "password": "unit105"
+        },
+        'angus_and_robertson': {
+            "url": 'http://dev.tangentlabs.co.uk/svn/angus_and_robertson/',
+            "username": "taobase-deployment",
+            "password": "unit105"
+        },
+        'riba': {
+            "url": 'http://dev.tangentlabs.co.uk/svn/riba/',
+            "username": "taobase-deployment",
+            "password": "unit105"
+        },
+    },
+    "user_repositories": {
+        'david.winterbottom@gmail.com': ["taoshop", "angus_and_robertson", "riba"]
+    },
+    "mailer": {
+        "server": "localhost",
+        "sender": "svngut@orwell.tangentlabs.co.uk"
+    },
+    "analysis_period_in_days": 4
+}

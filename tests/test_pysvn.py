@@ -7,20 +7,29 @@ url = "http://dev.tangentlabs.co.uk/svn/riba/"
 username = 'winterbottomd'
 password = 'wecb132'
 
-def get_login( realm, username, may_save ):
-    return True, username, password, False
+#def get_login( realm, username, may_save ):
+#    return True, username, password, False
+#
+#class ClientWrapper(object):
+#    
+#    def __init__(self, client):
+#        self._client = client
+#    
+#    def list(self, username, password, url):
+#        print url
+#        return self._client.list(url)
 
-class ClientWrapper(object):
-    
-    def __init__(self, client):
-        self._client = client
-    
-    def list(self, username, password, url):
-        print url
-        return self._client.list(url)
+class TestClientApi(unittest.TestCase):
 
-#client.callback_get_login = get_login
-client = pysvn.Client()
-wrapper = ClientWrapper(client)
+    def testFetchBranchUrls(self):
+        for branch in client.ls(url):
+            print branch['name']
+            
+            
+def Suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TestClientApi))
+    return suite
 
-print wrapper.list(username, password, url)
+if __name__ == '__main__':
+    unittest.main()

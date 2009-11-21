@@ -1,8 +1,35 @@
+import re
+
 from svngut.svn import *
 import datetime
 import time
 import pysvn
 import pprint
+
+class RepositoryInterrogator(object):
+    
+    def __init__(self, svn_client):
+        self.client = svn_client
+
+    def get_branch_contributions(self, repository, date_range):
+        pass
+        
+    def get_branch_urls(self, repository):
+        base_urls = self.get_url_list(repository.url)
+        
+        branch_urls = []
+        for url in base_urls:
+            if re.search('/trunk/?', url) != None:
+                branch_urls.append(url)
+            if re.search('/branches/?', url) != None:
+                branch_urls += self.get_url_list(url)
+        return branch_urls
+
+    def get_url_list(self, url):
+        urls = []
+        for svn_dir in self.client.ls(url):
+            urls.append(svn_dir['name'])
+        return urls
 
 class SvnCommitRetriever(object):
     
