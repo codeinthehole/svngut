@@ -51,21 +51,13 @@ def run(path_to_config="../etc/config.json"):
     # Load user repositories
     repositories = parser.get_repositories() 
     
+    # Fetch branch contributions for each repository
     svn_client = pysvn.Client()
     interrogator = RepositoryInterrogator(svn_client)
     for repository in repositories:
         repository_branch_contributions = interrogator.get_branch_contributions(repository, date_range)
     
     
-    # Assign contributions to each repo
-    interrogator = SvnCommitRetriever()
-    repository_contributions = {}
-    for name, repo in repositories.items():
-        contributions = interrogator.get_contributions(repo, date_range)
-        repository_contributions[repo.url] = contributions
-
-
-
     # Summary stats for all repos
     contributor_stats = {}
     for repo, contributions in repository_contributions.items():

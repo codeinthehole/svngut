@@ -2,10 +2,9 @@
 SVN objects
 """
 
-__all__ = ['Repository', 'Commit', 'BranchContribution', 'UserBranchContribution']
-
 class Error(Exception):
     pass
+
 
 class Repository(object):
     """A simple representation of a repository, together with its authentication
@@ -21,6 +20,7 @@ class Repository(object):
     def __repr__(self):
         return "<SVN repository at %s>" % self.url
 
+
 class UserRepositoryList(object):
     """Represents a user's list of repositories that he/she is interested in"""
     
@@ -30,6 +30,7 @@ class UserRepositoryList(object):
         
     def add_repository(self, repository):
         self.repositories.append(repository)
+
 
 class Commit(object):
     """A commit object"""
@@ -69,9 +70,12 @@ class Commit(object):
     def __repr__(self):
         return "<svn-commit: %d '%s' (%s)>" % (self.revision, self._get_message(), self.date.strftime("%Y-%m-%d %H:%M"))
 
+
 class BranchContribution(object):
+    """Represents a user's contribution to a particular branch"""
     
-    def __init__(self, branch_url, commits):
+    def __init__(self, username, branch_url, commits):
+        self.username = username
         self.branch_url = branch_url
         self.commits = commits
     
@@ -99,9 +103,3 @@ class BranchContribution(object):
         
     def __repr__(self):
         return "<svn-contributor: %s - %d commit(s)>" % (self.name, len(self.commits))
-
-class UserBranchContribution(object):
-    
-    def __init__(self, name, contribution):
-        self.name = name
-        self.contribution = contribution
