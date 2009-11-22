@@ -10,6 +10,7 @@ from svngut.interrogator import RepositoryInterrogator
 
 svn_base_url = 'http://svn.example.com/project/'
 
+
 def returnDummyUrls(base_url):
     """Returns a dummy set of URLs for testing"""
     if base_url == svn_base_url:
@@ -18,12 +19,15 @@ def returnDummyUrls(base_url):
         return getDummySvnDirs(('branches/dev/',))
     raise ValueError("Unrecognised argument: %s" % base_url)
 
+
 def returnDummySvnDirs(url):
     """Returns a dummy set of URLs"""
     return getDummySvnDirs(('trunk/', 'tags/', 'branches/'))
 
+
 def returnDummyCommits(url, revision_start, revision_end, discover_changed_paths):
     return [pysvn.PysvnLog(dict) for dict in returnDummyCommitDicts()]
+
 
 def returnDummyCommitDicts():
     return [
@@ -49,12 +53,14 @@ def returnDummyCommitDicts():
             },
             ]
 
+
 def getDummySvnDirs(paths):
     dirs = []
     for url_path in paths:
         svn_dir = {'name': '%s%s' % (svn_base_url, url_path)}
         dirs.append(svn_dir)
     return dirs
+
 
 class TestInterrogator(unittest.TestCase):
 

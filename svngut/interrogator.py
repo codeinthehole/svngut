@@ -11,12 +11,13 @@ class RepositoryInterrogator(object):
         self.client = svn_client
 
     def get_branch_contributions(self, repository, date_range):
+        contributions = {}
         for branch_url in self.get_branch_urls(repository):
-            pass
+            contributions[branch_url] = self.get_user_commits(branch_url, date_range)
+        return contributions
         
     def get_branch_urls(self, repository):
         base_urls = self.get_url_list(repository.url)
-        
         branch_urls = []
         for url in base_urls:
             if re.search('/trunk/?', url) != None:
@@ -31,9 +32,16 @@ class RepositoryInterrogator(object):
             urls.append(svn_dir['name'])
         return urls
     
+    def get_user_commits(self, url, date_range):
+        commits = self.get_commits_by_url(url, date_range)
+        return self._split_commits_by_user(commits)
+    
     def get_commits_by_url(self, url, date_range):
         raw_commits = self._get_raw_commits_by_url(url, date_range)
         return self._get_processed_commits(raw_commits)
+    
+    def _split_commits_by_user(self, commits):
+        pass
     
     def _get_raw_commits_by_url(self, url, date_range):
         start_revision = pysvn.Revision(pysvn.opt_revision_kind.date, 
