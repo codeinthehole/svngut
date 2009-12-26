@@ -1,22 +1,22 @@
-# Repositories to analyse
-# This should take the form name : url
-repository_mapping = {
-    'myrepo': 'http://svn.example.com/myrepo/trunk',
+{
+    "repositories": {
+        "mylibrary": {
+            "url": "http://svn.domain.com/mylibrary/",
+            "username": "user",
+            "password": "password123"
+        },
+        "otherlibrary": {
+            "url": "http://svn.domain.com/otherlibrary/",
+            "username": "otheruser",
+            "password": "password456"
+        }
+    },
+    "user_repositories": {
+        "user@domain.com": ["mylibrary", "otherlibrary"]
+    },
+    "mailer": {
+        "server": "localhost",
+        "sender": "svngut@domain.com"
+    },
+    "analysis_period_in_days": 4
 }
-
-# User's linked repos - set the user's email address as the key
-user_repository_mapping = {
-     'user1@domain.com': ['myfirstrepo', 'mysecondrepo'],
-     'user2@domain.com': ['myfirstrepo'],         
-}
-
-# SVN access credentials
-svn_username = None
-svn_password = None
-
-# Misc - the number of days of SVN activity to analyse
-analysis_period_in_days = 7
-
-# Email settings
-email_server = 'localhost'
-email_sender = 'svngut@example.com'

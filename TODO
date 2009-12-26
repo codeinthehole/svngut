@@ -1,6 +1,6 @@
 TODO
 
-Swap out config py file for a cfg file
+Use Mako templating
 
 Commandline-options:
 - pass path to config file

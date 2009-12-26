@@ -2,6 +2,7 @@ import re
 import datetime
 import time
 import pysvn
+import logging
 
 from svngut.svn import *
 
@@ -10,13 +11,17 @@ class RepositoryInterrogator(object):
     def __init__(self, svn_client):
         self.client = svn_client
 
-    def get_branch_contributions(self, repository, date_range):
+    def get_all_branch_contributions(self, repository, date_range):
+        """Returns the branch contributions for a given repository"""
         contributions = {}
+        logging.info("Analysing %s", repository.url)
         for branch_url in self.get_branch_urls(repository):
-            contributions[branch_url] = self.get_user_commits(branch_url, date_range)
+            logging.info("Fetching commits on branch: %s", branch_url)
+            contributions[branch_url] = self.get_branch_contributions(branch_url, date_range)
         return contributions
         
     def get_branch_urls(self, repository):
+        """Returns a list of the branch URLs that require analysing"""
         base_urls = self.get_url_list(repository.url)
         branch_urls = []
         for url in base_urls:
@@ -32,16 +37,33 @@ class RepositoryInterrogator(object):
             urls.append(svn_dir['name'])
         return urls
     
-    def get_user_commits(self, url, date_range):
-        commits = self.get_commits_by_url(url, date_range)
-        return self._split_commits_by_user(commits)
+    def get_branch_contributions(self, url, date_range):
+        """Returns a dict of user branch contributions."""
+        
+        # Retrive all commits for the date range
+        raw_commits = self._get_raw_commits_by_url(url, date_range)
+        
+        # Split by username into separate lists of converted commits
+        user_contributions = {}
+        for raw_commit in raw_commits:
+            username = raw_commit.author
+            commit = self._get_processed_commit(raw_commit)
+            if user_contributions.has_key(username):
+                user_contributions[username].append(commit)
+            else:
+                user_contributions[username] = [commit]
+        
+        # Create branch contributions objects
+        user_branch_contributions= {}
+        for username, commits in user_contributions.items():
+            user_branch_contributions[username] = BranchContribution(username, url, commits)
+        
+        return user_branch_contributions
     
     def get_commits_by_url(self, url, date_range):
         raw_commits = self._get_raw_commits_by_url(url, date_range)
+        
         return self._get_processed_commits(raw_commits)
-    
-    def _split_commits_by_user(self, commits):
-        pass
     
     def _get_raw_commits_by_url(self, url, date_range):
         start_revision = pysvn.Revision(pysvn.opt_revision_kind.date, 
@@ -60,9 +82,6 @@ class RepositoryInterrogator(object):
             if commit_datetime > date_range[0] and commit_datetime < date_range[1]:
                 filtered_raw_commits.append(commit)
         return filtered_raw_commits
-
-    def _get_processed_commits(self, raw_commits):
-        return [self._get_processed_commit(raw_commit) for raw_commit in raw_commits]
         
     def _get_processed_commit(self, raw_commit):
         return Commit(raw_commit.revision.number, 

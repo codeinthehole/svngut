@@ -33,7 +33,7 @@ class UserRepositoryList(object):
 
 
 class Commit(object):
-    """A commit object"""
+    """A simple commit object"""
     
     def __init__(self, revision, message, date, file_changes):
         self.revision = revision
@@ -102,4 +102,4 @@ class BranchContribution(object):
         return "<br/>".join(summaries)
         
     def __repr__(self):
-        return "<svn-contributor: %s - %d commit(s)>" % (self.name, len(self.commits))
+        return "<svn-branch-contribution by %s on branch %s - %d commit(s)>" % (self.username, self.branch_url, len(self.commits))

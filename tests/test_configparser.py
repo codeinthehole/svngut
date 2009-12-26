@@ -1,11 +1,13 @@
 import unittest
+import os
 
 from svngut.configparser import Parser
 
 class TestParser(unittest.TestCase):
 
     def setUp(self):
-        self.parser = Parser('fixtures/dummy-config.json')
+        path_to_config = os.path.join(os.path.dirname(__file__), 'fixtures/dummy-config.json')
+        self.parser = Parser(path_to_config)
 
     def testGetRepositories(self):
         """Repository objects are returned correctly"""
