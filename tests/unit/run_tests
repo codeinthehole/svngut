@@ -16,3 +16,4 @@ printf "======================================================================\n
 coverage report --omit $OMISSION_LIST
 [ ! -d $COVERAGE_FOLDER ] && mkdir $COVERAGE_FOLDER
 coverage html -d $COVERAGE_FOLDER --omit $OMISSION_LIST
+printf "\nSee $COVERAGE_FOLDER/index.html for more details\n\n"

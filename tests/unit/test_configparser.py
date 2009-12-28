@@ -44,6 +44,15 @@ class TestParser(unittest.TestCase):
         delta = end_date - start_date
         self.assertEqual(3, delta.days)
         self.assertEqual(23*60*60 + 59*60 + 59, delta.seconds)
+
+    def testBadPathRaisesException(self):
+        """Path must point to a valid file"""
+        self.assertRaises(OSError, Parser, '/tmp/asdfjkl')
+
+    def testJsonMustBeValid(self):
+        """Invalid JSON raises an exception"""
+        path_to_config = os.path.join(os.path.dirname(__file__), 'fixtures/invalid-config.json')
+        self.assertRaises(Exception, Parser, path_to_config)
     
 def Suite():
     suite = unittest.TestSuite()
