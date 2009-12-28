@@ -2,6 +2,7 @@
 import logging
 import sys
 import os
+import smtplib
 
 # Non-standard library imports
 import pysvn
@@ -44,15 +45,14 @@ def run(path_to_config):
         all_branch_contributions[repository_key] = interrogator.get_all_branch_contributions(repository, date_range)
     
     # Generate summary HTML
-    path_to_template = '/home/david/workspace/svngut/templates/summary.html'
-    print path_to_template
-    digestor = Summariser(path_to_template)
-    summary_html = digestor.get_summary_html(all_branch_contributions)
-    print summary_html
+    path_to_template = os.path.join(os.path.dirname(__file__), 'templates/summary.html')
+    digestor = Summariser(path_to_template, all_branch_contributions)
+    summary_html = digestor.get_summary_html()
     
     # Send notifications
-    #notifier = Notifier()
-    #notifier.send_emails()
+    server = smtplib.SMTP('localhost', 'svngut@orwell.tangentlabs.co.uk')
+    notifier = Notifier(server)
+    notifier.send_emails('david.winterbottom@gmail.com', summary_html)
     
 if __name__ == '__main__':
     run()      

@@ -2,3 +2,4 @@
 .settings
 .pydevproject
 *.swp
+.coverage

@@ -1,0 +1,65 @@
+<html>
+    <body>
+        <h1>SVNGUT Digest</h1>
+
+        <h2>User summary</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Num commits</th>
+                <th>Num added files</th>
+                <th>Num modified files</th>
+                <th>Num deleted files</th>
+            </tr>
+            % for username, user in user_stats.items():
+            <tr>
+                <td>${user['name'] | h}</td>
+                <td>${user['num_commits']}</td>
+                <td>${user['num_added_files']}</td>
+                <td>${user['num_modified_files']}</td>
+                <td>${user['num_deleted_files']}</td>
+            </tr>
+            % endfor
+        </table>
+
+        <h2>Repository summary</h2>
+        <table>
+            <tr>
+                <th>Repository URL</th>
+                <th>Num commits</th>
+                <th>Num added files</th>
+                <th>Num modified files</th>
+                <th>Num deleted files</th>
+            </tr>
+            % for branch_url, stats in branch_stats.items():
+            <tr>
+                <td>${stats['name'] | h}</td>
+                <td>${stats['num_commits']}</td>
+                <td>${stats['num_added_files']}</td>
+                <td>${stats['num_modified_files']}</td>
+                <td>${stats['num_deleted_files']}</td>
+            </tr>
+            % endfor
+        </table>
+
+        <h2>Repository breakdown</h2>
+        % for branch_contributions in repo_branch_contributions.values():
+        % for branch_url, contributions in branch_contributions.items():
+        <h3>${branch_url}</h3>
+        <dl>
+            % for username, contribution in contributions.items():
+            <dt>${username | h}</dt>
+            <dd>
+                <ul>
+                % for commit in contribution.commits:
+                    <li>${commit.get_summary() | h}</li>
+                % endfor
+                </ul>
+            </dd>
+            % endfor
+        </dl>
+        % endfor
+        % endfor
+    </body>
+</html>
+

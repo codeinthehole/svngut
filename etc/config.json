@@ -4,6 +4,11 @@
             "url": "http://dev.tangentlabs.co.uk/svn/whipcar/",
             "username": "taobase-deployment",
             "password": "unit105"
+        },
+        "riba": {
+            "url": "http://dev.tangentlabs.co.uk/svn/riba/",
+            "username": "taobase-deployment",
+            "password": "unit105"
         }
     },
     "user_repositories": {

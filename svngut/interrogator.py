@@ -60,11 +60,6 @@ class RepositoryInterrogator(object):
         
         return user_branch_contributions
     
-    def get_commits_by_url(self, url, date_range):
-        raw_commits = self._get_raw_commits_by_url(url, date_range)
-        
-        return self._get_processed_commits(raw_commits)
-    
     def _get_raw_commits_by_url(self, url, date_range):
         start_revision = pysvn.Revision(pysvn.opt_revision_kind.date, 
                                         time.mktime(date_range[0].timetuple()))

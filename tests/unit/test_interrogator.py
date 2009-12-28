@@ -102,17 +102,6 @@ class TestInterrogator(unittest.TestCase):
         expected_urls.sort()
         self.assertEquals(expected_urls, urls)
         
-    def testCommitListingIsReturnedCorrectly(self):
-        """Commit listings are returned correctly"""
-        client = Mock()
-        client.log = Mock()
-        client.log.side_effect = returnDummyCommits
-        
-        interrogator = RepositoryInterrogator(client)
-        commits = interrogator.get_commits_by_url('http://svn.example.com/project/trunk/', self.getDummyDateRange())
-        self.assertEquals(2, len(commits))
-        
-        
 def Suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestInterrogator))

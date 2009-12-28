@@ -1,0 +1,18 @@
+#!/bin/bash
+
+declare -r OMISSION_LIST="/usr,test_,alltests"
+declare -r COVERAGE_FOLDER="/tmp/coverage"
+
+# Run tests through coverage 
+printf "======================================================================\n"
+printf "TEST RESULTS\n"
+printf "======================================================================\n"
+coverage run alltests.py --branch
+
+# Create documentation
+printf "\n======================================================================\n"
+printf "COVERAGE\n"
+printf "======================================================================\n"
+coverage report --omit $OMISSION_LIST
+[ ! -d $COVERAGE_FOLDER ] && mkdir $COVERAGE_FOLDER
+coverage html -d $COVERAGE_FOLDER --omit $OMISSION_LIST
