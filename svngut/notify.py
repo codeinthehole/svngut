@@ -7,7 +7,7 @@ class Notifier(object):
         self.server = server
         self.sender_address = sender_address
     
-    def send_emails(self, recipient_address, message_html):
+    def send_email(self, recipient_address, message_html):
         logging.info("Sending notification email to %s..." % recipient_address)
         message = self._get_message(recipient_address, message_html)
         self.server.sendmail(self.sender_address, [recipient_address], message)

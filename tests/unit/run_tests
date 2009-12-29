@@ -7,7 +7,8 @@ declare -r COVERAGE_FOLDER="/tmp/coverage"
 printf "======================================================================\n"
 printf "TEST RESULTS\n"
 printf "======================================================================\n"
-coverage run alltests.py --branch
+abspath=$(dirname $(cd ${0%/*} && echo $PWD/${0##*/}))
+coverage run $abspath/alltests.py --branch
 
 # Create documentation
 printf "\n======================================================================\n"

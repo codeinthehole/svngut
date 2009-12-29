@@ -1,6 +1,7 @@
 import simplejson
 import os.path
 import datetime
+import smtplib
 
 from svngut.svn import Repository
 
@@ -36,3 +37,12 @@ class Parser(object):
     
     def get_analysis_period(self):
         return self.json['analysis_period_in_days']
+
+    def get_email_server(self):
+        return smtplib.SMTP(host=self.json['mailer']['server'])
+
+    def get_email_sender_address(self):
+        return self.json['mailer']['sender']
+
+    def get_user_repositories(self):
+        return self.json['user_repositories']

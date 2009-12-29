@@ -53,6 +53,17 @@ class TestParser(unittest.TestCase):
         """Invalid JSON raises an exception"""
         path_to_config = os.path.join(os.path.dirname(__file__), 'fixtures/invalid-config.json')
         self.assertRaises(Exception, Parser, path_to_config)
+
+    def testGetEmailServer(self):
+        """A valid email server is returned by the config parser"""
+        server = self.parser.get_email_server()
+        self.assert_(getattr(server, 'sendmail'))
+        self.assert_(getattr(server, 'quit'))
+
+    def testGetUserRepositories(self):
+        """The user repository choices are correctly returned by the config parser"""
+        user_repos = self.parser.get_user_repositories()
+        self.assertEqual({'user@domain.com': ['mylibrary', 'otherlibrary']}, user_repos)
     
 def Suite():
     suite = unittest.TestSuite()
