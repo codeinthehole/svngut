@@ -21,4 +21,4 @@ class Notifier(object):
         return message.as_string()
     
     def _get_subject(self):
-        return 'SVNGUT' 
+        return 'SVNGUT summary' 

@@ -5,11 +5,11 @@
         <h2>User summary</h2>
         <table>
             <tr>
-                <th>Name</th>
-                <th>Num commits</th>
-                <th>Num added files</th>
-                <th>Num modified files</th>
-                <th>Num deleted files</th>
+                <th style="text-align:left;">Name</th>
+                <th style="text-align:left">Num commits</th>
+                <th style="text-align:left">Num added files</th>
+                <th style="text-align:left">Num modified files</th>
+                <th style="text-align:left">Num deleted files</th>
             </tr>
             % for username, user in user_stats.items():
             <tr>
@@ -25,11 +25,11 @@
         <h2>Repository summary</h2>
         <table>
             <tr>
-                <th>Repository URL</th>
-                <th>Num commits</th>
-                <th>Num added files</th>
-                <th>Num modified files</th>
-                <th>Num deleted files</th>
+                <th style="text-align:left">Repository URL</th>
+                <th style="text-align:left">Num commits</th>
+                <th style="text-align:left">Num added files</th>
+                <th style="text-align:left">Num modified files</th>
+                <th style="text-align:left">Num deleted files</th>
             </tr>
             % for branch_url, stats in branch_stats.items():
             <tr>

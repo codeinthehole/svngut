@@ -2,7 +2,7 @@ from mako.template import Template
 
 class Summariser(object):
     """Service object responsible for converting a set of repository branch
-       contributions into a HTML summary"""
+       contributions into a HTML summary reading for emailing"""
     
     def __init__(self, path_to_template_file, repository_branch_contributions):
         """Construct with the path to the template file and the dictionary of all branch 
@@ -40,6 +40,8 @@ class Summariser(object):
         stats = {}
         for repo_key, branch_contributions in self.repository_branch_contributions.items():
             for branch_url, contributions in branch_contributions.items():
+                if len(contributions) == 0: 
+                    continue
                 if not stats.has_key(branch_url):
                     stats[branch_url] = {'name': branch_url,
                                         'repository_contributions': 0,
