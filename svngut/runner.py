@@ -23,6 +23,15 @@ def set_up_logger():
     );
 
 
+def get_email_subject(date_range):
+    delta = date_range[1] - date_range[0]
+    if delta.days < 1:
+        date_summary = date_range[0].strftime("%Y-%m-%d")
+    else:
+        date_summary = "%s to %s" % (date_range[0].strftime("%Y-%m-%d"), date_range[1].strftime("%Y-%m-%d"))
+    return "SVNGUT digest for %s" % date_summary
+
+
 def run(path_to_config):
     
     set_up_logger()
@@ -33,6 +42,7 @@ def run(path_to_config):
     # Read configuration
     parser = Parser(path_to_config)
     date_range = parser.get_date_range()
+
     logging.info("Analysis period between %s and %s", date_range[0], date_range[1])
     repositories = parser.get_repositories() 
     logging.info("Found %d repositories to analyse..." % len(repositories))
@@ -49,7 +59,7 @@ def run(path_to_config):
     notifier = Notifier(parser.get_email_server(), parser.get_email_sender_address())
     for email_address, repository_keys in parser.get_user_repositories().items():
         summary_html = digestor.get_summary_html_for(repository_keys)
-        notifier.send_email(email_address, summary_html)
+        notifier.send_email(email_address, get_email_subject(date_range), summary_html)
     
 if __name__ == '__main__':
     run()      

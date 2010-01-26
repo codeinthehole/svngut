@@ -18,6 +18,7 @@ class Summariser(object):
                                repo_branch_contributions=self.repository_branch_contributions)
 
     def _get_user_stats(self):
+        """Returns a dictionary of user statistics"""
         stats = {}
         for repo_key, branch_contributions in self.repository_branch_contributions.items():
             for branch_url, contributions in branch_contributions.items():

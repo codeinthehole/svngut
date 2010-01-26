@@ -45,6 +45,7 @@
         <h2>Repository breakdown</h2>
         % for branch_contributions in repo_branch_contributions.values():
         % for branch_url, contributions in branch_contributions.items():
+        % if len(contributions) > 0:
         <h3>${branch_url}</h3>
         <dl>
             % for username, contribution in contributions.items():
@@ -58,6 +59,7 @@
             </dd>
             % endfor
         </dl>
+        % endif
         % endfor
         % endfor
     </body>
