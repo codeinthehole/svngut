@@ -1,19 +1,94 @@
 <html>
     <body>
+        <style>
+            body {
+                font-size: 9pt;
+                font-family: sans-serif;
+            }
+			h1 {
+				width: 800px;
+				text-align: center;
+				margin: 5px 0;
+			}
+			h2 {
+				width: 800px;
+				text-align: center;
+				font-size: 9pt;
+				font-style: italic;
+			}
+            table {
+                border: 1px solid #0E096A;
+                padding: 0px;
+                margin: 0px;
+                border-collapse: collapse; 
+                border-spacing: 0;
+                vertical-align: top;
+                margin-bottom: 20px;
+				width: 800px;
+            }
+			table tr.headings {
+				background-color: #918DE6;
+				color: white;
+			}
+            table tr.even {
+                background-color: white;
+            }
+            table tr.odd {
+                background-color: #E5E4FF;
+            }
+            table caption {
+                font-weight: bold;
+                color: #222;
+                text-align: left;
+                background-color: #0E096A;
+                color: white;
+                padding: 6px 4px;
+                font-size: 9pt;
+				text-transform: uppercase;
+            }
+            table th {
+                text-align: left;
+                border-top: 1px solid #0E096A;
+                border-bottom: 1px solid #0E096A;
+                padding: 4px 4px;
+                font-size: 9pt;
+            }
+			table td {
+                font-family: monospace;
+                padding: 2px 4px;
+			}
+            table td {
+                text-align: left;
+            }
+            table td.left_col {
+                text-align: left;
+            }
+        </style>
         <h1>SVNGUT Digest</h1>
+		<h2>by David Winterbottom</h2>
 
-        <h2>User summary</h2>
         <table>
-            <tr>
-                <th style="text-align:left;">Name</th>
-                <th style="text-align:left">Num commits</th>
-                <th style="text-align:left">Num added files</th>
-                <th style="text-align:left">Num modified files</th>
-                <th style="text-align:left">Num deleted files</th>
+            <caption>User summary</caption>
+            <tr class="headings">
+                <th>Name</th>
+                <th>Commits</th>
+                <th>Added files</th>
+                <th>Modified files</th>
+                <th>Deleted files</th>
             </tr>
+            <% 
+                counter = 0 
+            %>
             % for username, user in user_stats.items():
-            <tr>
-                <td>${user['name'] | h}</td>
+            <%
+                if counter % 2 == 0:
+                    row_style = "even"
+                else:
+                    row_style = "odd"
+                counter += 1
+            %>
+            <tr class="${row_style}">
+				<td class="left_col">${user['name'] | h}</td>
                 <td>${user['num_commits']}</td>
                 <td>${user['num_added_files']}</td>
                 <td>${user['num_modified_files']}</td>
@@ -22,18 +97,28 @@
             % endfor
         </table>
 
-        <h2>Repository summary</h2>
         <table>
-            <tr>
-                <th style="text-align:left">Repository URL</th>
-                <th style="text-align:left">Num commits</th>
-                <th style="text-align:left">Num added files</th>
-                <th style="text-align:left">Num modified files</th>
-                <th style="text-align:left">Num deleted files</th>
+            <caption>Repository summary</caption>
+            <tr class="headings">
+                <th>Repository URL</th>
+                <th>Commits</th>
+                <th>Added files</th>
+                <th>Modified files</th>
+                <th>Deleted files</th>
             </tr>
+            <% 
+                counter = 0 
+            %>
             % for branch_url, stats in branch_stats.items():
-            <tr>
-                <td>${stats['name'] | h}</td>
+            <%
+                if counter % 2 == 0:
+                    row_style = "even"
+                else:
+                    row_style = "odd"
+                counter += 1
+            %>
+			<tr class="${row_style}">
+                <td class="left_col">${stats['name'] | h}</td>
                 <td>${stats['num_commits']}</td>
                 <td>${stats['num_added_files']}</td>
                 <td>${stats['num_modified_files']}</td>
@@ -42,26 +127,38 @@
             % endfor
         </table>
 
-        <h2>Repository breakdown</h2>
+        <table>
+            <caption>Repository breakdown</caption>
         % for branch_contributions in repo_branch_contributions.values():
         % for branch_url, contributions in branch_contributions.items():
         % if len(contributions) > 0:
-        <h3>${branch_url}</h3>
-        <dl>
+            <tr class="headings">
+                <th colspan="2">${branch_url}</th>
+            </tr>
+            <% 
+                counter = 0 
+            %>
             % for username, contribution in contributions.items():
-            <dt>${username | h}</dt>
-            <dd>
-                <ul>
-                % for commit in contribution.commits:
-                    <li>${commit.get_summary() | h}</li>
-                % endfor
-                </ul>
-            </dd>
+            <%
+                if counter % 2 == 0:
+                    row_style = "even"
+                else:
+                    row_style = "odd"
+                counter += 1
+            %>
+			<tr>
+                <th colspan="2">${username | h}</th>
+            </tr>
+            % for commit in contribution.commits:
+            <tr class="${row_style}">
+                <td>${commit.get_summary() | h}</td>
+            </tr>
             % endfor
-        </dl>
+            % endfor
         % endif
         % endfor
         % endfor
+        </table>
     </body>
 </html>
 

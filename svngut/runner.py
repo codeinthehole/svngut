@@ -59,6 +59,9 @@ def run(path_to_config):
     notifier = Notifier(parser.get_email_server(), parser.get_email_sender_address())
     for email_address, repository_keys in parser.get_user_repositories().items():
         summary_html = digestor.get_summary_html_for(repository_keys)
+        file = open('/tmp/svngut.html', 'w')
+        file.write(summary_html)
+        file.close()
         notifier.send_email(email_address, get_email_subject(date_range), summary_html)
     
 if __name__ == '__main__':

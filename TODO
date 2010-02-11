@@ -3,6 +3,17 @@ TODO
 Set up system test to try full integration test against a public SVN repository
 
 Ensure no commits does not send an email
+List numner of repos committed to
+
+Templating:
+	- striped tables
+	- highlighted late/early commits
+	- summary sentence of everything
+	- sortable tables
 
 Commandline-options:
 - pass path to config file
+
+Bugs:
+- No commits still sends email
+- Problem when date range covers month end
